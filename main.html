@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Image to PNG</title>
+</head>
+<body>
+
+    <input type="file" id="imageInput" accept="image/*">
+    <canvas id="canvas" style="display: none;"></canvas> <!-- 用于转换图像的 Canvas -->
+    <a id="downloadLink" style="display: none;">Download PNG</a> <!-- 下载链接 -->
+
+    <script>
+        document.getElementById('imageInput').addEventListener('change', handleFileUpload);
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            // 读取文件内容为二进制数据
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // 获取 canvas 以及其上下文
+                    const canvas = document.getElementById('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // 设置 canvas 的尺寸与图片相同
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    // 将图片绘制到 canvas 上
+                    ctx.drawImage(img, 0, 0);
+
+                    // 将 canvas 转换为 PNG 格式的 Data URL
+                    const pngDataUrl = canvas.toDataURL('image/png');
+
+                    // 创建一个下载链接并自动触发下载
+                    const downloadLink = document.getElementById('downloadLink');
+                    downloadLink.href = pngDataUrl;
+                    downloadLink.download = 'converted_image.png';
+                    downloadLink.style.display = 'block';
+                    downloadLink.innerText = 'Click here to download the PNG image';
+                };
+
+                // 加载图像
+                img.src = e.target.result;
+            };
+
+            // 将文件读取为 Data URL
+            reader.readAsDataURL(file);
+        }
+    </script>
+
+</body>
+</html>
