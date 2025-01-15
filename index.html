@@ -1,15 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Convert Image to PNG</title>
-</head>
-<body>
 
-    <input type="file" id="imageInput" accept="image/*">
-    <canvas id="canvas" style="display: none;"></canvas> <!-- 用于转换图像的 Canvas -->
-    <a id="downloadLink" style="display: none;">Download PNG</a> <!-- 下载链接 -->
+    <!-- 引入 Google 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* 页面整体样式 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 主容器样式 */
+        .container {
+            background-color: #fff;
+            padding: 40px 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 上传按钮样式 */
+        input[type="file"] {
+            font-size: 16px;
+            margin: 20px 0;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        input[type="file"]:hover {
+            border-color: #007bff;
+        }
+
+        /* 下载链接样式 */
+        a {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        /* 提示文本样式 */
+        .message {
+            font-size: 14px;
+            color: #888;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Convert Your Image to PNG</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <canvas id="canvas" style="display: none;"></canvas> <!-- 用于转换图像的 Canvas -->
+        <a id="downloadLink" style="display: none;">Download PNG</a> <!-- 下载链接 -->
+
+        <p class="message">Select an image file to convert to PNG format.</p>
+    </div>
 
     <script>
         document.getElementById('imageInput').addEventListener('change', handleFileUpload);
@@ -21,9 +101,9 @@
 
             // 读取文件内容为二进制数据
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const img = new Image();
-                img.onload = function() {
+                img.onload = function () {
                     // 获取 canvas 以及其上下文
                     const canvas = document.getElementById('canvas');
                     const ctx = canvas.getContext('2d');
@@ -42,7 +122,7 @@
                     const downloadLink = document.getElementById('downloadLink');
                     downloadLink.href = pngDataUrl;
                     downloadLink.download = 'converted_image.png';
-                    downloadLink.style.display = 'block';
+                    downloadLink.style.display = 'inline-block';
                     downloadLink.innerText = 'Click here to download the PNG image';
                 };
 
@@ -54,6 +134,6 @@
             reader.readAsDataURL(file);
         }
     </script>
-
 </body>
+
 </html>
