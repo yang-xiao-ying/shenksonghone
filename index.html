@@ -127,20 +127,20 @@
 
 <body>
     <div class="container">
-        <h1>二进制图像转 PNG 格式</h1>
+        <h1>二进制图像转 PNG 格式(Convert Your Image to PNG)</h1>
         <input type="file" id="imageInput" accept="image/*">
         <canvas id="canvas" style="display: none;"></canvas> <!-- 用于转换图像的 Canvas -->
         <a id="downloadLink" style="display: none;">Download PNG</a> <!-- 下载链接 -->
         <p class="message">Select an image file to convert to PNG format.</p>
         <p id="errorMessage" class="error" style="display: none;">Please upload a valid image file (JPG, PNG, JPEG).</p>
-        <button id="downloadBackground" style="margin-top: 20px;">Download Background Image</button>
-        <button id="changeBackground">Change Background</button>
+        <button id="downloadBackground" style="margin-top: 20px;">下载背景图(Download Background Image)</button>
+        <button id="changeBackground">切换背景图(Change Background)</button>
     </div>
 
     <!-- 预加载背景图片 -->
     <div style="display: none;">
-        <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper3.jpg" loading="eager" alt="preload">
         <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper.png" loading="eager" alt="preload">
+        <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper3.jpg" loading="eager" alt="preload">
         <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper1.png" loading="eager" alt="preload">
         <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper2.png" loading="eager" alt="preload">
     </div>
