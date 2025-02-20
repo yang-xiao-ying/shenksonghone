@@ -1,29 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Convert Image to PNG</title>
-</head>
-<body>
 
-    <input type="file" id="imageInput" accept="image/*">
-    <canvas id="canvas" style="display: none;"></canvas> <!-- 用于转换图像的 Canvas -->
-    <a id="downloadLink" style="display: none;">Download PNG</a> <!-- 下载链接 -->
+    <!-- 引入 Google 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* 页面整体样式 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 1s ease-in-out; /* 为背景切换添加过渡效果 */
+        }
+
+        /* 主容器样式 */
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 40px 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            position: absolute;
+            left: 10px; /* 控制容器的左侧位置 */
+            top: 50%; /* 垂直居中 */
+            transform: translateY(-50%); /* 精确垂直居中 */
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 上传按钮样式 */
+        input[type="file"] {
+            font-size: 16px;
+            margin: 20px 0;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        input[type="file"]:hover {
+            border-color: #007bff;
+        }
+
+        /* 下载链接样式 */
+        a {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        /* 提示文本样式 */
+        .message {
+            font-size: 14px;
+            color: #888;
+            margin-top: 15px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+
+        /* 下载按钮样式 */
+        #downloadBackground {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #downloadBackground:hover {
+            background-color: #218838;
+        }
+
+        /* 手动切换背景按钮 */
+        #changeBackground {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #changeBackground:hover {
+            background-color: #e68900;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <div class="container">
+        <h1>二进制图像转 PNG 格式(Convert Your Image to PNG)</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <canvas id="canvas" style="display: none;"></canvas> <!-- 用于转换图像的 Canvas -->
+        <a id="downloadLink" style="display: none;">Download PNG</a> <!-- 下载链接 -->
+        <p class="message">Select an image file to convert to PNG format.</p>
+        <p id="errorMessage" class="error" style="display: none;">Please upload a valid image file (JPG, PNG, JPEG).</p>
+        <button id="downloadBackground" style="margin-top: 20px;">下载背景图(Download Background Image)</button>
+        <button id="changeBackground">切换背景图(Change Background)</button>
+    </div>
+
+    <!-- 预加载背景图片 -->
+    <div style="display: none;">
+        <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper.png" loading="eager" alt="preload">
+        <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper3.jpg" loading="eager" alt="preload">
+        <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper1.png" loading="eager" alt="preload">
+        <img src="http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper2.png" loading="eager" alt="preload">
+    </div>
 
     <script>
+        // 背景图片数组
+        const backgroundImages = [
+            'http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper3.jpg',
+            'http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper.png',
+            'http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper1.png',
+            'http://xmov-youyan.oss-cn-hangzhou.aliyuncs.com/youyan/youyan_offline_render/upload_file_test/image/wallpaper2.png'
+        ];
+
+        let currentBackgroundIndex = 0; // 当前背景图片索引
+
+        // 设置初始背景图片
+        document.body.style.backgroundImage = `url(${backgroundImages[currentBackgroundIndex]})`;
+
+        // 自动切换背景图片的函数
+        function changeBackground() {
+            currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.length;
+            document.body.style.backgroundImage = `url(${backgroundImages[currentBackgroundIndex]})`;
+        }
+
+        // 每10秒自动切换一次背景图
+        setInterval(changeBackground, 10000); // 每10秒切换一次
+
+        // 手动切换背景按钮点击事件
+        document.getElementById('changeBackground').addEventListener('click', function () {
+            changeBackground(); // 点击按钮时切换背景图
+        });
+
+        // 图片格式校验
         document.getElementById('imageInput').addEventListener('change', handleFileUpload);
 
         function handleFileUpload(event) {
             const file = event.target.files[0];
 
-            if (!file) return;
+            // 图片文件类型校验
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!file || !validImageTypes.includes(file.type)) {
+                document.getElementById('errorMessage').style.display = 'inline';
+                return;
+            } else {
+                document.getElementById('errorMessage').style.display = 'none';
+            }
 
             // 读取文件内容为二进制数据
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const img = new Image();
-                img.onload = function() {
+                img.onload = function () {
                     // 获取 canvas 以及其上下文
                     const canvas = document.getElementById('canvas');
                     const ctx = canvas.getContext('2d');
@@ -42,7 +212,7 @@
                     const downloadLink = document.getElementById('downloadLink');
                     downloadLink.href = pngDataUrl;
                     downloadLink.download = 'converted_image.png';
-                    downloadLink.style.display = 'block';
+                    downloadLink.style.display = 'inline-block';
                     downloadLink.innerText = 'Click here to download the PNG image';
                 };
 
@@ -53,7 +223,18 @@
             // 将文件读取为 Data URL
             reader.readAsDataURL(file);
         }
-    </script>
 
+        // 下载背景图按钮
+        document.getElementById('downloadBackground').addEventListener('click', function () {
+            // 获取当前背景图片的 URL
+            const currentBackground = getComputedStyle(document.body).backgroundImage;
+            const imageUrl = currentBackground.match(/url\("?(.*?)"?\)/)[1]; // 提取 URL
+            const link = document.createElement('a');
+            link.href = imageUrl; // 设置为外部资源 URL
+            link.download = 'background_image.jpg'; // 设置下载文件名
+            link.click(); // 触发点击事件下载图片
+        });
+    </script>
 </body>
+
 </html>
