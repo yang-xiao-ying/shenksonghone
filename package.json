@@ -1,7 +1,6 @@
 {
   "name": "shenksonghone",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
@@ -14,5 +13,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "description": ""
 }
